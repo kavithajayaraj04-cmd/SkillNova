@@ -1,0 +1,24 @@
+# Security & Secrets
+.env
+*.env
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Database & logs
+*.db
+*.sqlite3
+*.log
+
+# Streamlit & IDE
+.streamlit/secrets.toml
+.vscode/
+.idea/

@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillNova AI – Adaptive Learning & Career Intelligence Platform</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-primary, #070B14);
+      color: var(--text-main, #F1F5F9);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar Layout */
+    .sidebar {
+      width: 290px;
+      min-width: 290px;
+      background: #0B1120;
+      border-right: 1px solid rgba(79, 128, 225, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.4rem 1.1rem;
+      overflow-y: auto;
+    }
+    .brand-header {
+      padding-bottom: 1.1rem;
+      border-bottom: 1px solid rgba(79, 128, 225, 0.18);
+      margin-bottom: 1.2rem;
+    }
+    .brand-title {
+      font-size: 1.55rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #60A5FA 10%, #C084FC 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .brand-tagline {
+      font-size: 0.74rem;
+      color: #94A3B8;
+      font-weight: 500;
+      margin-top: 0.3rem;
+      letter-spacing: 0.02em;
+    }
+
+    .profile-pill {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+    .profile-pill-title { font-size: 0.72rem; text-transform: uppercase; color: #818CF8; font-weight: 700; letter-spacing: 0.05em; }
+    .profile-pill-name { font-weight: 700; color: #F8FAFC; font-size: 0.95rem; margin-top: 0.2rem; }
+    .profile-pill-role { font-size: 0.8rem; color: #94A3B8; }
+
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      color: #94A3B8;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .nav-item:hover {
+      background: rgba(99, 102, 241, 0.12);
+      color: #F8FAFC;
+    }
+    .nav-item.active {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(99, 102, 241, 0.25));
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+    .nav-icon { font-size: 1.05rem; }
+
+    .fleet-status-box {
+      background: rgba(8, 12, 22, 0.6);
+      border-radius: 8px;
+      padding: 0.7rem 0.8rem;
+      margin-top: 1.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .fleet-status-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #94A3B8;
+      margin-bottom: 0.4rem;
+    }
+    .agent-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #CBD5E1;
+      margin-bottom: 0.25rem;
+    }
+    .agent-row span.dot { color: #34D399; font-weight: bold; }
+
+    /* Main Content Area */
+    .main-viewport {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2.2rem 2.8rem;
+      background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.08) 0%, rgba(7, 11, 20, 1) 70%);
+    }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Custom Form & Grid elements */
+    .btn-primary {
+      background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.3rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.14); }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(79, 128, 225, 0.25);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      color: #F1F5F9;
+      font-family: inherit;
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+      margin-bottom: 0.8rem;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+
+    /* Chat Elements */
+    .chat-box {
+      height: 440px;
+      overflow-y: auto;
+      background: rgba(14, 22, 38, 0.6);
+      border: 1px solid rgba(79, 128, 225, 0.18);
+      border-radius: 14px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .chat-bubble {
+      max-width: 80%;
+      padding: 0.85rem 1.1rem;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+    .chat-bubble.assistant {
+      align-self: flex-start;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: #F1F5F9;
+      border-bottom-left-radius: 2px;
+    }
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #2563EB, #4F46E5);
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+    .prompt-chip {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+      border-radius: 20px;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .prompt-chip:hover {
+      background: rgba(99, 102, 241, 0.25);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div>
+      <div class="brand-header">
+        <div class="brand-title">🌌 SkillNova AI</div>
+        <div class="brand-tagline">Discover Skills. Bridge Gaps. Build Your Future.</div>
+      </div>
+
+      <div class="profile-pill">
+        <div class="profile-pill-title">Active Profile</div>
+        <div class="profile-pill-name" id="sb-user-name">Demo Student</div>
+        <div class="profile-pill-role" id="sb-user-role">Full Stack Developer</div>
+        <div style="font-size: 0.78rem; color: #34D399; margin-top: 0.3rem;" id="sb-readiness-pill">Readiness: 38.5%</div>
+      </div>
+
+      <ul class="nav-list">
+        <li class="nav-item active" data-page="page-dashboard"><span class="nav-icon">📊</span> Dashboard</li>
+        <li class="nav-item" data-page="page-profile"><span class="nav-icon">👤</span> My Profile</li>
+        <li class="nav-item" data-page="page-assessment"><span class="nav-icon">✍️</span> Skill Assessment</li>
+        <li class="nav-item" data-page="page-gap"><span class="nav-icon">🔬</span> Skill Gap Analysis</li>
+        <li class="nav-item" data-page="page-explorer"><span class="nav-icon">🧭</span> Career Explorer</li>
+        <li class="nav-item" data-page="page-roadmap"><span class="nav-icon">🗺️</span> Personalized Roadmap</li>
+        <li class="nav-item" data-page="page-resources"><span class="nav-icon">📚</span> Learning Resources</li>
+        <li class="nav-item" data-page="page-progress"><span class="nav-icon">📈</span> Progress Tracker</li>
+        <li class="nav-item" data-page="page-mentor"><span class="nav-icon">🤖</span> AI Career Mentor</li>
+        <li class="nav-item" data-page="page-activity"><span class="nav-icon">⚙️</span> Multi-Agent Activity</li>
+        <li class="nav-item" data-page="page-settings"><span class="nav-icon">🛠️</span> Settings</li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="fleet-status-box">
+        <div class="fleet-status-title">🤖 6-Agent AI Fleet Status</div>
+        <div class="agent-row"><span>• Skill Analyzer</span><span class="dot">● Active</span></div>
+        <div class="agent-row"><span>• Career Matcher</span><span class="dot">● Active</span></div>
+        <div class="agent-row"><span>• Learning Path</span><span class="dot">● Active</span></div>
+        <div class="agent-row"><span>• Resource Curator</span><span class="dot">● Active</span></div>
+        <div class="agent-row"><span>• Assessment Engine</span><span class="dot">● Active</span></div>
+        <div class="agent-row"><span>• AI Career Mentor</span><span class="dot">● Active</span></div>
+      </div>
+      <button class="btn-secondary" style="width: 100%; margin-top: 0.8rem; font-size: 0.78rem;" onclick="resetDemoData()">
+        🔄 Reset Demo Scenario
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="main-viewport">
+
+    <!-- 1. DASHBOARD -->
+    <section id="page-dashboard" class="page-section active">
+      <div class="hero-card">
+        <div class="hero-title" id="dash-welcome">Welcome back, Demo Student 👋</div>
+        <div class="hero-tagline" id="dash-tagline">
+          SkillNova AI collaborative agents have evaluated your portfolio against <strong>Full Stack Developer</strong> industry benchmarks.
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 1.2rem; flex-wrap: wrap;">
+          <span class="agent-badge badge-active" id="dash-role-badge">Target: Full Stack Developer</span>
+          <span class="agent-badge badge-matched" id="dash-ready-badge">Readiness: 38.5%</span>
+          <span class="agent-badge" id="dash-progress-badge">Roadmap: 0%</span>
+        </div>
+      </div>
+
+      <div class="grid-5" style="margin-bottom: 1.5rem;">
+        <div class="stat-card">
+          <div class="stat-label">Existing Skills</div>
+          <div class="stat-value" style="color: #38BDF8;" id="dash-stat-existing">3</div>
+          <div style="color: #64748B; font-size: 0.78rem;">In Profile</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Matched Skills</div>
+          <div class="stat-value" style="color: #34D399;" id="dash-stat-matched">3</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Role Compatible</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Missing Skills</div>
+          <div class="stat-value" style="color: #F43F5E;" id="dash-stat-missing">6</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Curriculum Target</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Career Readiness</div>
+          <div class="stat-value" style="color: #60A5FA;" id="dash-stat-readiness">38.5%</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Weighted Benchmark</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Roadmap Done</div>
+          <div class="stat-value" style="color: #C084FC;" id="dash-stat-roadmap">0%</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Phases Completed</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel" style="border-left: 4px solid #38BDF8;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div class="glass-panel-title">⚡ Recommended Next Learning Activity</div>
+            <span class="agent-badge badge-matched">Autonomous Recommendation</span>
+          </div>
+          <p style="color: #F8FAFC; font-size: 1.05rem; font-weight: 700; margin: 0.4rem 0;" id="dash-next-activity-title">
+            Phase 1: HTML and CSS Fundamentals
+          </p>
+          <p style="color: #94A3B8; font-size: 0.9rem;" id="dash-next-activity-desc">
+            Master semantic document structuring, modern CSS layouts (Flexbox & Grid), and responsive web accessibility.
+          </p>
+          <div style="margin-top: 0.8rem;" id="dash-next-activity-btn">
+            <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML" target="_blank" style="display: inline-block; padding: 0.45rem 0.95rem; background: #2563EB; color: white; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">
+              Start Learning: MDN HTML Foundations ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="border-left: 4px solid #A855F7;">
+          <div class="glass-panel-title">🎯 Career Compatibility Index</div>
+          <p style="color: #F1F5F9; font-size: 1rem; margin: 0.4rem 0;">
+            Status: <strong style="color: #38BDF8;" id="dash-readiness-tier">Emerging Contender / In Active Training</strong>
+          </p>
+          <p style="color: #94A3B8; font-size: 0.85rem;" id="dash-formula-summary">
+            Calculated as (3.9 earned points / 10.1 total weighted requirement points) × 100.
+          </p>
+          <div style="margin-top: 0.8rem; font-size: 0.85rem; color: #34D399;">
+            ✓ Multi-Agent pipeline refreshed and synchronized with SQLite database.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-panel">
+          <div class="glass-panel-title">📊 Competency Breakdown for Role</div>
+          <div style="height: 250px; position: relative;">
+            <canvas id="chart-dash-donut"></canvas>
+          </div>
+        </div>
+        <div class="glass-panel">
+          <div class="glass-panel-title">🗺️ Roadmap Milestone Sequence</div>
+          <div style="height: 250px; position: relative;">
+            <canvas id="chart-dash-bar"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. MY PROFILE -->
+    <section id="page-profile" class="page-section">
+      <div class="hero-title">👤 Learner Profile & Competency Portfolio</div>
+      <div class="hero-tagline">Manage your academic background, verified skills, certifications, and target career direction.</div>
+      <br>
+
+      <div class="grid-2" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel">
+          <div class="glass-panel-title">🎓 Personal Academic Information</div>
+          <p><strong>Name:</strong> <span id="prof-name">Demo Student</span></p>
+          <p><strong>Email:</strong> <span id="prof-email">demo.student@skillnova.ai</span></p>
+          <p><strong>Education:</strong> <span id="prof-edu">BSc Computer Science</span></p>
+          <p><strong>Department:</strong> <span id="prof-dept">Computer Science & Engineering</span></p>
+        </div>
+        <div class="glass-panel">
+          <div class="glass-panel-title">🎯 Career Aspiration</div>
+          <p><strong>Target Role:</strong> <span class="agent-badge badge-active" id="prof-role">Full Stack Developer</span></p>
+          <p><strong>Career Goals:</strong> <span id="prof-goals">Become a high-impact full stack engineer building scalable AI-integrated systems.</span></p>
+          <p><strong>Learning Interests:</strong> <span id="prof-interests">Web Development, REST APIs, AI Agents</span></p>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div class="glass-panel-title" style="margin-bottom: 0;">⚡ Verified Skill Inventory</div>
+        </div>
+        <div class="grid-4" id="profile-skills-grid" style="margin-bottom: 1.5rem;"></div>
+
+        <div style="background: rgba(15, 23, 42, 0.7); border-radius: 10px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.06);">
+          <div style="font-weight: 700; color: #F8FAFC; margin-bottom: 0.8rem;">Add or Update Skill</div>
+          <div style="display: flex; gap: 1rem; align-items: flex-end;">
+            <div style="flex: 2;">
+              <label style="font-size: 0.82rem; color: #94A3B8;">Skill Name (e.g. JavaScript, React, Docker)</label>
+              <input type="text" id="new-skill-name" class="form-input" placeholder="Enter skill name..." style="margin-bottom: 0;">
+            </div>
+            <div style="flex: 1;">
+              <label style="font-size: 0.82rem; color: #94A3B8;">Proficiency Level</label>
+              <select id="new-skill-level" class="form-select" style="margin-bottom: 0;">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Expert">Expert</option>
+              </select>
+            </div>
+            <button class="btn-primary" onclick="addSkill()">➕ Save Skill</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-panel">
+          <div class="glass-panel-title">🏆 Verified Certifications</div>
+          <div id="profile-certs-list"></div>
+        </div>
+        <div class="glass-panel">
+          <div class="glass-panel-title">💻 Portfolio Projects</div>
+          <div id="profile-projects-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SKILL ASSESSMENT -->
+    <section id="page-assessment" class="page-section">
+      <div class="hero-title">✍️ Diagnostic Skill Assessment</div>
+      <div class="hero-tagline">Test your knowledge with adaptive MCQs. Your scores directly refine your career readiness and roadmap.</div>
+      <br>
+
+      <div class="glass-panel" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <span style="font-weight: 700;">Select Competency to Test:</span>
+            <select id="assess-skill-select" class="form-select" style="width: 220px; margin-bottom: 0;" onchange="loadAssessmentQuestions()">
+              <option value="Python">Python</option>
+              <option value="SQL">SQL</option>
+              <option value="HTML">HTML</option>
+              <option value="CSS">CSS</option>
+              <option value="JavaScript">JavaScript</option>
+              <option value="React">React</option>
+              <option value="Machine Learning">Machine Learning</option>
+              <option value="Statistics">Statistics</option>
+            </select>
+          </div>
+          <div style="color: #94A3B8; font-size: 0.85rem;" id="assess-specs">
+            Interactive Questions • 4 Options Each • Adaptive Logic
+          </div>
+        </div>
+      </div>
+
+      <div id="assessment-container" style="margin-bottom: 1.5rem;"></div>
+
+      <div id="assessment-result-box" style="display: none; margin-bottom: 1.5rem;"></div>
+    </section>
+
+    <!-- 4. SKILL GAP ANALYSIS -->
+    <section id="page-gap" class="page-section">
+      <div class="hero-title">🔬 Skill Gap Analysis & Diagnostic</div>
+      <div class="hero-tagline">Multi-Agent diagnostic comparing current proficiencies against target career requirements.</div>
+      <br>
+
+      <div class="grid-4" style="margin-bottom: 1.5rem;">
+        <div class="stat-card">
+          <div class="stat-label">Strong Skills</div>
+          <div class="stat-value" style="color: #34D399;" id="gap-strong-count">0</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Advanced / Expert</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Developing Skills</div>
+          <div class="stat-value" style="color: #38BDF8;" id="gap-dev-count">2</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Intermediate level</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Foundational Gaps</div>
+          <div class="stat-value" style="color: #F59E0B;" id="gap-weak-count">1</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Beginner / Low assessment</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Priority Deficiencies</div>
+          <div class="stat-value" style="color: #F43F5E;" id="gap-priority-count">4</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Critical / High Importance</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel">
+          <div class="glass-panel-title">🎯 Competency Radar Coverage</div>
+          <div style="height: 330px; position: relative;">
+            <canvas id="chart-gap-radar"></canvas>
+          </div>
+        </div>
+        <div class="glass-panel">
+          <div class="glass-panel-title">📊 Benchmark Proficiency Gap Bar Chart</div>
+          <div style="height: 330px; position: relative;">
+            <canvas id="chart-gap-bar"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <div class="glass-panel-title">🚨 Priority Missing Skills for Role</div>
+        <div id="gap-priority-cards"></div>
+      </div>
+    </section>
+
+    <!-- 5. CAREER EXPLORER -->
+    <section id="page-explorer" class="page-section">
+      <div class="hero-title">🧭 Career Explorer & Role Compatibility</div>
+      <div class="hero-tagline">Benchmark your skills against 10 premier engineering career paths and evaluate your job market readiness.</div>
+      <br>
+
+      <div class="glass-panel" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel-title">🌐 Multi-Career Market Readiness Radar</div>
+        <div style="height: 300px; position: relative;">
+          <canvas id="chart-explorer-bar"></canvas>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+          <div class="glass-panel-title" style="margin-bottom: 0;">🔎 Inspect & Switch Target Career</div>
+          <div style="display: flex; gap: 0.8rem;">
+            <select id="explorer-role-select" class="form-select" style="width: 250px; margin-bottom: 0;" onchange="inspectCareerRole()"></select>
+            <button class="btn-primary" onclick="setTargetCareerFromExplorer()">🎯 Set as Target Career</button>
+          </div>
+        </div>
+        <div id="explorer-role-details"></div>
+      </div>
+    </section>
+
+    <!-- 6. PERSONALIZED LEARNING ROADMAP -->
+    <section id="page-roadmap" class="page-section">
+      <div class="hero-title">🗺️ Adaptive Learning Roadmap</div>
+      <div class="hero-tagline">Dynamic curriculum sequence architected for your target role based on identified competency gaps.</div>
+      <br>
+
+      <div class="stat-card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <div class="stat-label">Roadmap Milestone Completion</div>
+          <div style="font-weight: 700; font-size: 1.4rem; color: #38BDF8;" id="roadmap-pct-text">0%</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); border-radius: 9999px; height: 12px; margin: 0.8rem 0; overflow: hidden;">
+          <div id="roadmap-progress-bar" style="background: linear-gradient(90deg, #3B82F6 0%, #10B981 100%); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
+        </div>
+        <div style="display: flex; gap: 1.5rem; font-size: 0.85rem; color: #94A3B8;">
+          <span>✅ Completed: <strong style="color: #34D399;" id="roadmap-done-count">0</strong></span>
+          <span>⚡ In Progress: <strong style="color: #38BDF8;" id="roadmap-prog-count">1</strong></span>
+          <span>⏳ Pending: <strong style="color: #CBD5E1;" id="roadmap-pend-count">5</strong></span>
+        </div>
+      </div>
+
+      <div id="roadmap-phases-container"></div>
+    </section>
+
+    <!-- 7. LEARNING RESOURCES -->
+    <section id="page-resources" class="page-section">
+      <div class="hero-title">📚 Vetted Learning Resources</div>
+      <div class="hero-tagline">Verified, zero-cost courses, official docs, and interactive drills for career competencies.</div>
+      <br>
+
+      <div class="glass-panel" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <div style="flex: 1;">
+            <label style="font-size: 0.8rem; color: #94A3B8;">Filter by Skill:</label>
+            <select id="res-filter-skill" class="form-select" style="margin-bottom: 0;" onchange="filterResources()"></select>
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 0.8rem; color: #94A3B8;">Resource Format:</label>
+            <select id="res-filter-type" class="form-select" style="margin-bottom: 0;" onchange="filterResources()">
+              <option value="All">All Formats</option>
+              <option value="Course">Courses</option>
+              <option value="Documentation">Documentation</option>
+              <option value="Tutorial">Tutorials</option>
+              <option value="Practical Exercises">Exercises</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" id="resources-grid"></div>
+    </section>
+
+    <!-- 8. PROGRESS TRACKER -->
+    <section id="page-progress" class="page-section">
+      <div class="hero-title">📈 Learning Analytics & Progress Tracker</div>
+      <div class="hero-tagline">Real-time telemetry measuring skill acquisition velocity, assessment results, and career readiness progression.</div>
+      <br>
+
+      <div class="grid-4" style="margin-bottom: 1.5rem;">
+        <div class="stat-card">
+          <div class="stat-label">Total Verified Skills</div>
+          <div class="stat-value" style="color: #38BDF8;" id="prog-total-skills">3</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Profile Inventory</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Roadmap Milestone %</div>
+          <div class="stat-value" style="color: #10B981;" id="prog-roadmap-pct">0%</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Completed Phases</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Assessment Average</div>
+          <div class="stat-value" style="color: #A855F7;" id="prog-test-avg">--%</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Evaluated Tests</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Career Readiness</div>
+          <div class="stat-value" style="color: #60A5FA;" id="prog-readiness">38.5%</div>
+          <div style="color: #64748B; font-size: 0.78rem;">Benchmark Index</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel">
+          <div class="glass-panel-title">🍩 Skill Proficiency Distribution</div>
+          <div style="height: 250px; position: relative;">
+            <canvas id="chart-prog-donut"></canvas>
+          </div>
+        </div>
+        <div class="glass-panel">
+          <div class="glass-panel-title">🏁 Completed vs Pending Phases</div>
+          <div style="height: 250px; position: relative;">
+            <canvas id="chart-prog-bar"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <div class="glass-panel-title">🕒 Recent Multi-Agent Activities</div>
+        <div id="prog-activity-list"></div>
+      </div>
+    </section>
+
+    <!-- 9. AI CAREER MENTOR -->
+    <section id="page-mentor" class="page-section">
+      <div class="hero-title">🤖 AI Career Mentor</div>
+      <div class="hero-tagline">Personalized AI mentor synchronizing with your live skills, roadmap progress, and career ambitions. <span style="padding:2px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;background:linear-gradient(135deg,#4285F4,#A855F7);color:#fff;">💎 Powered by Google Gemini</span></div>
+      <br>
+
+      <div class="glass-panel" style="margin-bottom: 1rem; padding: 0.9rem;">
+        <div style="font-size: 0.82rem; font-weight: 700; color: #94A3B8; margin-bottom: 0.5rem;">💡 Suggested Questions:</div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <span class="prompt-chip" onclick="askMentor('What skills am I missing?')">❓ What skills am I missing?</span>
+          <span class="prompt-chip" onclick="askMentor('How can I become a Full Stack Developer?')">🚀 How to become job-ready?</span>
+          <span class="prompt-chip" onclick="askMentor('What is my current career readiness?')">📊 What is my career readiness?</span>
+          <span class="prompt-chip" onclick="askMentor('Suggest a beginner project for me.')">💻 Suggest a portfolio project</span>
+          <span class="prompt-chip" onclick="askMentor('How can I improve my JavaScript and understand closures?')">🔍 Explain JavaScript Closures</span>
+        </div>
+      </div>
+
+      <div class="chat-box" id="mentor-chat-box"></div>
+
+      <div style="display: flex; gap: 0.8rem; margin-top: 1rem;">
+        <input type="text" id="mentor-input" class="form-input" placeholder="Ask your mentor about skills, roadmaps, concepts, or projects..." style="margin-bottom: 0;" onkeypress="if(event.key === 'Enter') sendMentorMessage()">
+        <button class="btn-primary" onclick="sendMentorMessage()">Send ➔</button>
+      </div>
+    </section>
+
+    <!-- 10. MULTI-AGENT ACTIVITY CENTER -->
+    <section id="page-activity" class="page-section">
+      <div class="hero-title">🤖 Multi-Agent Activity & Orchestration Center</div>
+      <div class="hero-tagline">Inspect the live collaborative communication, execution traces, and decision logs among all 6 specialized AI agents.</div>
+      <br>
+
+      <div class="glass-panel-title">Fleet Specifications & Division of Labor</div>
+      <div class="grid-3" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel" style="margin-bottom: 0;">
+          <span class="agent-badge badge-active">Skill Analyzer Agent</span>
+          <div style="font-weight: 700; color: #F1F5F9; margin: 0.4rem 0 0.2rem 0;">Skill Decomposition & Proficiency</div>
+          <p style="color: #94A3B8; font-size: 0.82rem;">Decomposes learner competencies into tiers, isolates strengths vs foundational gaps, and recommends targeted reinforcement.</p>
+        </div>
+        <div class="glass-panel" style="margin-bottom: 0;">
+          <span class="agent-badge badge-matched">Career Matching Agent</span>
+          <div style="font-weight: 700; color: #F1F5F9; margin: 0.4rem 0 0.2rem 0;">Career Benchmarking & Readiness</div>
+          <p style="color: #94A3B8; font-size: 0.82rem;">Calculates mathematically weighted readiness scores and identifies missing vs matched skill gaps across 10 engineering roles.</p>
+        </div>
+        <div class="glass-panel" style="margin-bottom: 0;">
+          <span class="agent-badge" style="color: #C084FC; border-color: #A855F7;">Learning Path Agent</span>
+          <div style="font-weight: 700; color: #F1F5F9; margin: 0.4rem 0 0.2rem 0;">Curriculum Architecture</div>
+          <p style="color: #94A3B8; font-size: 0.82rem;">Synthesizes missing skills into sequential multi-phase roadmaps and reconfigures phases adaptively upon test results.</p>
+        </div>
+        <div class="glass-panel" style="margin-bottom: 0;">
+          <span class="agent-badge" style="color: #F59E0B; border-color: #F59E0B;">Resource Curator Agent</span>
+          <div style="font-weight: 700; color: #F1F5F9; margin: 0.4rem 0 0.2rem 0;">Educational Material Curator</div>
+          <p style="color: #94A3B8; font-size: 0.82rem;">Filters verified, 100% free courses, tutorials, and documentation matching individual skill gap levels.</p>
+        </div>
+        <div class="glass-panel" style="margin-bottom: 0;">
+          <span class="agent-badge badge-missing">Assessment & Progress Agent</span>
+          <div style="font-weight: 700; color: #F1F5F9; margin: 0.4rem 0 0.2rem 0;">Diagnostic Evaluator</div>
+          <p style="color: #94A3B8; font-size: 0.82rem;">Administers adaptive MCQs, calculates scores, flags weak topics, and updates verified learner proficiency levels.</p>
+        </div>
+        <div class="glass-panel" style="margin-bottom: 0;">
+          <span class="agent-badge" style="color: #34D399; border-color: #10B981;">AI Career Mentor Agent</span>
+          <div style="font-weight: 700; color: #F1F5F9; margin: 0.4rem 0 0.2rem 0;">Personalized Career Strategist</div>
+          <p style="color: #94A3B8; font-size: 0.82rem;">Provides real-time contextual mentorship, project architectures, and conceptual breakdowns anchored to live student data.</p>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel-title">🔄 Multi-Agent Pipeline Dataflow</div>
+        <div style="text-align: center; padding: 1rem; background: rgba(8, 12, 22, 0.5); border-radius: 8px;">
+          <span class="agent-badge" style="background: #1E293B; color: #F8FAFC;">Learner Profile</span>
+          <span style="color: #60A5FA;"> ➔ </span>
+          <span class="agent-badge badge-active">Skill Analyzer</span>
+          <span style="color: #60A5FA;"> ➔ </span>
+          <span class="agent-badge badge-matched">Career Matcher</span>
+          <span style="color: #60A5FA;"> ➔ </span>
+          <span class="agent-badge" style="color: #C084FC; border-color: #A855F7;">Learning Path</span>
+          <span style="color: #60A5FA;"> ➔ </span>
+          <span class="agent-badge" style="color: #F59E0B; border-color: #F59E0B;">Resource Curator</span>
+          <br><br>
+          <span style="color: #60A5FA;">⬇ Feedback Loop</span>
+          <br><br>
+          <span class="agent-badge" style="color: #34D399; border-color: #10B981;">AI Career Mentor</span>
+          <span style="color: #60A5FA;"> ⬅ </span>
+          <span class="agent-badge badge-missing">Assessment & Progress</span>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <div class="glass-panel-title">📜 Real-Time Agent Execution & Decision Logs</div>
+        <div id="activity-logs-container"></div>
+      </div>
+    </section>
+
+    <!-- 11. SETTINGS -->
+    <section id="page-settings" class="page-section">
+      <div class="hero-title">🛠️ System Configuration & Preferences</div>
+      <div class="hero-tagline">Customize runtime parameters, AI LLM connectors, and local SQLite database state.</div>
+      <br>
+
+      <div class="grid-2" style="margin-bottom: 1.5rem;">
+        <div class="glass-panel">
+          <div class="glass-panel-title">🤖 Optional External LLM Integration</div>
+          <p style="color: #94A3B8; font-size: 0.85rem; margin-bottom: 0.8rem;">
+            SkillNova AI operates completely offline with zero paid API dependencies using its contextual rule-based reasoning engine. You may optionally supply an API key for live LLM generation.
+          </p>
+          <input type="password" id="settings-api-key" class="form-input" placeholder="Enter your Gemini API Key..." value="">
+          <button class="btn-primary" onclick="saveGeminiKey()">💎 Save Gemini API Key</button>
+          <div id="apikey-status" style="margin-top: 0.5rem; font-size: 0.82rem; color: #34D399;"></div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="glass-panel-title">💾 Local Database Administration</div>
+          <p style="color: #94A3B8; font-size: 0.85rem; margin-bottom: 0.8rem;">
+            All learner profiles, skill inventories, assessments, roadmaps, and agent telemetry are persisted in SQLite (15 relational tables).
+          </p>
+          <button class="btn-secondary" style="border-color: #F43F5E; color: #FB7185;" onclick="resetDemoData()">
+            🔄 Reset Demo Student State to Default
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <div class="glass-panel-title">ℹ️ Platform Specifications</div>
+        <ul style="list-style: none; color: #CBD5E1; font-size: 0.88rem; line-height: 1.8;">
+          <li>• <strong>Platform:</strong> SkillNova AI v1.0.0 (Hackathon Edition)</li>
+          <li>• <strong>Engine:</strong> Collaborative 6-Agent AI Architecture</li>
+          <li>• <strong>Database:</strong> SQLite 3 (15 Relational Tables)</li>
+          <li>• <strong>UI Framework:</strong> Modern Futuristic Dark Navy SaaS Dashboard</li>
+          <li>• <strong>Data Visualizations:</strong> Chart.js Interactive Radar, Donut, and Bar Suite</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- APPLICATION SCRIPTS & REACTIVITY -->
+  <script>
+    let globalPipeline = null;
+    let globalUser = null;
+    let globalCareers = [];
+    let globalResources = [];
+    let currentQuestions = [];
+    let currentAnswers = {};
+
+    // Navigation Switching
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+        item.classList.add('active');
+        const target = item.getAttribute('data-page');
+        document.getElementById(target).classList.add('active');
+
+        // Refresh specific charts on view enter
+        if (target === 'page-gap') renderGapCharts();
+        if (target === 'page-explorer') renderExplorerCharts();
+        if (target === 'page-progress') renderProgressCharts();
+      });
+    });
+
+    // Initial Data Fetch
+    async function initApp() {
+      await fetchUserData();
+      await fetchPipeline();
+      await fetchCareers();
+      await fetchResources();
+      await fetchLogs();
+      await fetchMentorHistory();
+      loadAssessmentQuestions();
+    }
+
+    async function fetchUserData() {
+      try {
+        const res = await fetch('/api/user?user_id=1');
+        globalUser = await res.json();
+        const u = globalUser.user;
+        document.getElementById('sb-user-name').innerText = u.name;
+        document.getElementById('sb-user-role').innerText = u.target_career;
+        document.getElementById('dash-welcome').innerText = `Welcome back, ${u.name} 👋`;
+        document.getElementById('prof-name').innerText = u.name;
+        document.getElementById('prof-email').innerText = u.email;
+        document.getElementById('prof-edu').innerText = u.education;
+        document.getElementById('prof-dept').innerText = u.department;
+        document.getElementById('prof-role').innerText = u.target_career;
+        document.getElementById('prof-goals').innerText = u.career_goals || 'Not specified';
+        document.getElementById('prof-interests').innerText = u.learning_interests || 'General Tech';
+
+        // Render profile skills
+        renderProfileSkills(globalUser.skills);
+        renderProfileCerts(globalUser.certifications);
+        renderProfileProjects(globalUser.projects);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderProfileSkills(skills) {
+      const grid = document.getElementById('profile-skills-grid');
+      grid.innerHTML = '';
+      if (!skills || skills.length === 0) {
+        grid.innerHTML = '<div style="color: #94A3B8;">No skills registered yet.</div>';
+        return;
+      }
+      skills.forEach(s => {
+        const badgeClass = (s.proficiency_level === 'Advanced' || s.proficiency_level === 'Expert') ? 'badge-active' : 'badge-matched';
+        grid.innerHTML += `
+          <div class="stat-card" style="padding: 0.9rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 700; color: #F8FAFC;">${s.skill_name}</div>
+              <div style="margin-top: 0.3rem;"><span class="agent-badge ${badgeClass}">${s.proficiency_level}</span></div>
+            </div>
+            <button onclick="deleteSkill(${s.id})" style="background: none; border: none; color: #F43F5E; cursor: pointer; font-size: 1rem;" title="Delete">🗑️</button>
+          </div>
+        `;
+      });
+    }
+
+    function renderProfileCerts(certs) {
+      const list = document.getElementById('profile-certs-list');
+      list.innerHTML = '';
+      if (!certs || certs.length === 0) {
+        list.innerHTML = '<div style="color: #94A3B8;">No certifications listed.</div>';
+        return;
+      }
+      certs.forEach(c => {
+        list.innerHTML += `
+          <div style="background: rgba(15,23,42,0.6); padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 0.6rem; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="font-weight: 700; color: #60A5FA;">🏆 ${c.name}</div>
+            <div style="font-size: 0.82rem; color: #94A3B8; margin-top: 0.2rem;">Issuer: ${c.issuer || 'N/A'} | Date: ${c.issue_date || 'N/A'}</div>
+          </div>
+        `;
+      });
+    }
+
+    function renderProfileProjects(projs) {
+      const list = document.getElementById('profile-projects-list');
+      list.innerHTML = '';
+      if (!projs || projs.length === 0) {
+        list.innerHTML = '<div style="color: #94A3B8;">No projects added yet.</div>';
+        return;
+      }
+      projs.forEach(p => {
+        list.innerHTML += `
+          <div style="background: rgba(15,23,42,0.6); padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 0.6rem; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="font-weight: 700; color: #A855F7;">💻 ${p.title}</div>
+            <p style="font-size: 0.84rem; color: #CBD5E1; margin: 0.3rem 0;">${p.description || ''}</p>
+            <div style="font-size: 0.78rem; color: #38BDF8;">Tech: ${p.technologies || 'N/A'}</div>
+          </div>
+        `;
+      });
+    }
+
+    async function fetchPipeline() {
+      try {
+        const res = await fetch('/api/pipeline?user_id=1');
+        globalPipeline = await res.json();
+        const cm = globalPipeline.career_matching;
+        const sa = globalPipeline.skill_analysis;
+        const rp = globalPipeline.roadmap_phases;
+
+        // Update Dashboard Stats
+        document.getElementById('sb-readiness-pill').innerText = `Readiness: ${cm.readiness_percentage}%`;
+        document.getElementById('dash-ready-badge').innerText = `Readiness: ${cm.readiness_percentage}%`;
+        document.getElementById('dash-role-badge').innerText = `Target: ${globalPipeline.target_career}`;
+        document.getElementById('dash-stat-existing').innerText = sa.total_skills;
+        document.getElementById('dash-stat-matched').innerText = cm.matched_count;
+        document.getElementById('dash-stat-missing').innerText = cm.missing_count;
+        document.getElementById('dash-stat-readiness').innerText = `${cm.readiness_percentage}%`;
+        document.getElementById('dash-readiness-tier').innerText = cm.readiness_tier;
+        document.getElementById('dash-formula-summary').innerText = cm.formula_summary;
+
+        // Roadmap counts
+        const completed = rp.filter(p => p.status === 'Completed').length;
+        const pct = rp.length > 0 ? Math.round((completed / rp.length) * 100) : 0;
+        document.getElementById('dash-stat-roadmap').innerText = `${pct}%`;
+        document.getElementById('dash-progress-badge').innerText = `Roadmap: ${pct}%`;
+        document.getElementById('roadmap-pct-text').innerText = `${pct}%`;
+        document.getElementById('roadmap-progress-bar').style.width = `${pct}%`;
+        document.getElementById('roadmap-done-count').innerText = completed;
+        document.getElementById('roadmap-prog-count').innerText = rp.filter(p => p.status === 'In Progress').length;
+        document.getElementById('roadmap-pend-count').innerText = rp.length - completed - rp.filter(p => p.status === 'In Progress').length;
+
+        // Gap Stats
+        document.getElementById('gap-strong-count').innerText = sa.strong_skills.length;
+        document.getElementById('gap-dev-count').innerText = sa.developing_skills.length;
+        document.getElementById('gap-weak-count').innerText = sa.weak_skills.length;
+        document.getElementById('gap-priority-count').innerText = cm.priority_missing_count;
+
+        // Render Priority Missing Cards
+        const gapCards = document.getElementById('gap-priority-cards');
+        gapCards.innerHTML = '';
+        if (cm.priority_missing_skills && cm.priority_missing_skills.length > 0) {
+          cm.priority_missing_skills.forEach(p => {
+            gapCards.innerHTML += `
+              <div class="roadmap-phase-card" style="border-left-color: #F43F5E;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="font-size: 1.05rem; color: #F8FAFC;">${p.name}</strong>
+                  <span class="agent-badge badge-missing">Importance: ${p.importance}</span>
+                </div>
+                <div style="color: #94A3B8; font-size: 0.85rem; margin-top: 0.3rem;">
+                  Minimum Benchmark Required: <strong>${p.min_level}</strong>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          gapCards.innerHTML = '<div style="color: #34D399;">✓ No critical priority deficiencies found!</div>';
+        }
+
+        // Render Roadmap Phases
+        renderRoadmapPhases(rp);
+
+        // Render Dashboard Charts
+        renderDashboardCharts(cm, rp);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderRoadmapPhases(phases) {
+      const container = document.getElementById('roadmap-phases-container');
+      container.innerHTML = '';
+      phases.forEach((ph, idx) => {
+        const isDone = ph.status === 'Completed';
+        const isProg = ph.status === 'In Progress';
+        const borderCol = isDone ? '#10B981' : (isProg ? '#38BDF8' : '#6366F1');
+        const badgeStyle = isDone ? 'badge-active' : (isProg ? 'badge-matched' : '');
+
+        container.innerHTML += `
+          <div class="roadmap-phase-card ${isDone ? 'completed' : ''}" style="border-left-color: ${borderCol};">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <span style="font-size: 0.78rem; text-transform: uppercase; color: #818CF8; font-weight: 700;">
+                  PHASE ${ph.phase_number} • ${ph.estimated_duration}
+                </span>
+                <h3 style="margin: 0.2rem 0; font-size: 1.18rem; color: #F8FAFC;">${ph.phase_name}</h3>
+                <div style="font-size: 0.88rem; color: #38BDF8; margin-bottom: 0.3rem;">
+                  <strong>Core Competency:</strong> ${ph.target_skills}
+                </div>
+              </div>
+              <span class="agent-badge ${badgeStyle}">${ph.status}</span>
+            </div>
+            <p style="color: #CBD5E1; font-size: 0.9rem; margin: 0.4rem 0;"><strong>Objective:</strong> ${ph.learning_objectives}</p>
+            <div style="background: rgba(8,12,22,0.5); padding: 0.55rem 0.8rem; border-radius: 6px; font-size: 0.82rem; color: #94A3B8; margin-bottom: 0.7rem;">
+              📚 <strong>Topics:</strong> ${ph.topics}
+            </div>
+            <div style="display: flex; gap: 0.8rem;">
+              ${!isDone ? `<button class="btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.82rem;" onclick="togglePhaseComplete(${idx})">Mark Completed ✓</button>` : `<button class="btn-secondary" style="padding: 0.4rem 0.9rem; font-size: 0.82rem;" onclick="togglePhaseRestart(${idx})">Restart Phase ↺</button>`}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function togglePhaseComplete(idx) {
+      if (globalPipeline && globalPipeline.roadmap_phases[idx]) {
+        globalPipeline.roadmap_phases[idx].status = 'Completed';
+        if (idx + 1 < globalPipeline.roadmap_phases.length && globalPipeline.roadmap_phases[idx + 1].status === 'Pending') {
+          globalPipeline.roadmap_phases[idx + 1].status = 'In Progress';
+        }
+        renderRoadmapPhases(globalPipeline.roadmap_phases);
+        fetchPipeline();
+      }
+    }
+
+    function togglePhaseRestart(idx) {
+      if (globalPipeline && globalPipeline.roadmap_phases[idx]) {
+        globalPipeline.roadmap_phases[idx].status = 'In Progress';
+        renderRoadmapPhases(globalPipeline.roadmap_phases);
+        fetchPipeline();
+      }
+    }
+
+    // Chart.js Instances
+    let chartDashDonut, chartDashBar, chartGapRadar, chartGapBar, chartExplorerBar, chartProgDonut, chartProgBar;
+
+    function renderDashboardCharts(cm, rp) {
+      // Donut
+      const ctxDonut = document.getElementById('chart-dash-donut').getContext('2d');
+      if (chartDashDonut) chartDashDonut.destroy();
+      chartDashDonut = new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+          labels: ['Matched Skills', 'Priority Gaps', 'Other Missing'],
+          datasets: [{
+            data: [cm.matched_count, cm.priority_missing_count, cm.missing_count - cm.priority_missing_count],
+            backgroundColor: ['#10B981', '#F43F5E', '#6366F1'],
+            borderWidth: 0
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#CBD5E1' } } } }
+      });
+
+      // Phases Bar
+      const ctxBar = document.getElementById('chart-dash-bar').getContext('2d');
+      if (chartDashBar) chartDashBar.destroy();
+      const labels = rp.map(p => `P${p.phase_number}`);
+      const data = rp.map(p => p.status === 'Completed' ? 100 : (p.status === 'In Progress' ? 50 : 15));
+      chartDashBar = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Milestone Progress %',
+            data: data,
+            backgroundColor: data.map(d => d === 100 ? '#10B981' : (d === 50 ? '#38BDF8' : '#334155'))
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: { y: { max: 100, ticks: { color: '#94A3B8' } }, x: { ticks: { color: '#CBD5E1' } } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderGapCharts() {
+      if (!globalPipeline) return;
+      const cm = globalPipeline.career_matching;
+      const categories = [...cm.matched_skills.map(s => s.name), ...cm.missing_skills.map(s => s.name)];
+      const userScores = [...cm.matched_skills.map(s => s.user_level === 'Expert' ? 100 : (s.user_level === 'Advanced' ? 85 : 65)), ...cm.missing_skills.map(() => 0)];
+      const benchScores = [...cm.matched_skills.map(() => 75), ...cm.missing_skills.map(() => 75)];
+
+      // Radar
+      const ctxRadar = document.getElementById('chart-gap-radar').getContext('2d');
+      if (chartGapRadar) chartGapRadar.destroy();
+      chartGapRadar = new Chart(ctxRadar, {
+        type: 'radar',
+        data: {
+          labels: categories,
+          datasets: [
+            { label: 'Your Current Level', data: userScores, borderColor: '#38BDF8', backgroundColor: 'rgba(56, 189, 248, 0.25)' },
+            { label: 'Role Benchmark', data: benchScores, borderColor: '#818CF8', borderDash: [4, 4], backgroundColor: 'rgba(129, 140, 248, 0.1)' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: { r: { max: 100, ticks: { color: '#94A3B8', backdropColor: 'transparent' }, grid: { color: 'rgba(255,255,255,0.06)' }, pointLabels: { color: '#CBD5E1' } } },
+          plugins: { legend: { labels: { color: '#CBD5E1' } } }
+        }
+      });
+
+      // Comparative Bar
+      const ctxBar = document.getElementById('chart-gap-bar').getContext('2d');
+      if (chartGapBar) chartGapBar.destroy();
+      chartGapBar = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: categories,
+          datasets: [
+            { label: 'Your Proficiency', data: userScores, backgroundColor: '#3B82F6' },
+            { label: 'Target Benchmark', data: benchScores, backgroundColor: 'rgba(99, 102, 241, 0.6)' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: { y: { max: 100, ticks: { color: '#94A3B8' } }, x: { ticks: { color: '#CBD5E1' } } },
+          plugins: { legend: { labels: { color: '#CBD5E1' } } }
+        }
+      });
+    }
+
+    async function fetchCareers() {
+      try {
+        const res = await fetch('/api/careers?user_id=1');
+        globalCareers = await res.json();
+        const sel = document.getElementById('explorer-role-select');
+        sel.innerHTML = '';
+        globalCareers.forEach(c => {
+          sel.innerHTML += `<option value="${c.career}">${c.career} (${c.readiness_percentage}%)</option>`;
+        });
+        inspectCareerRole();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderExplorerCharts() {
+      if (!globalCareers || globalCareers.length === 0) return;
+      const ctx = document.getElementById('chart-explorer-bar').getContext('2d');
+      if (chartExplorerBar) chartExplorerBar.destroy();
+      const labels = globalCareers.map(c => c.career);
+      const data = globalCareers.map(c => c.readiness_percentage);
+
+      chartExplorerBar = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Readiness (%)',
+            data: data,
+            backgroundColor: data.map(d => d >= 75 ? '#10B981' : (d >= 40 ? '#38BDF8' : '#6366F1'))
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          scales: { x: { max: 100, ticks: { color: '#94A3B8' } }, y: { ticks: { color: '#F1F5F9' } } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function inspectCareerRole() {
+      const selName = document.getElementById('explorer-role-select').value;
+      const role = globalCareers.find(c => c.career === selName);
+      if (!role) return;
+
+      const details = document.getElementById('explorer-role-details');
+      details.innerHTML = `
+        <div class="hero-card" style="margin-top: 1rem; padding: 1.4rem;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div style="font-size: 1.4rem; font-weight: 800; color: #F8FAFC;">${role.career}</div>
+            <span class="agent-badge badge-active">${role.readiness_tier}</span>
+          </div>
+          <p style="color: #94A3B8; font-size: 0.9rem; margin-top: 0.3rem;">${role.description}</p>
+          <div style="display: flex; gap: 2rem; margin-top: 1rem;">
+            <div><span class="stat-label">Calculated Readiness</span><div class="stat-value" style="color: #38BDF8;">${role.readiness_percentage}%</div></div>
+            <div><span class="stat-label">Matched Skills</span><div class="stat-value" style="color: #34D399;">${role.matched_count}</div></div>
+            <div><span class="stat-label">Missing Skills</span><div class="stat-value" style="color: #F43F5E;">${role.missing_count}</div></div>
+          </div>
+          <div style="margin-top: 0.6rem; font-size: 0.8rem; color: #64748B;">${role.formula_summary}</div>
+        </div>
+      `;
+    }
+
+    async function setTargetCareerFromExplorer() {
+      const selName = document.getElementById('explorer-role-select').value;
+      await fetch('/api/career/set', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: 1, target_career: selName })
+      });
+      await fetchUserData();
+      await fetchPipeline();
+      await fetchCareers();
+      alert(`Target career successfully switched to: ${selName}! Roadmap reconfigured.`);
+    }
+
+    // Assessments
+    async function loadAssessmentQuestions() {
+      const skill = document.getElementById('assess-skill-select').value;
+      const res = await fetch(`/api/assessment/questions?skill=${encodeURIComponent(skill)}`);
+      currentQuestions = await res.json();
+      currentAnswers = {};
+
+      const container = document.getElementById('assessment-container');
+      container.innerHTML = '';
+      document.getElementById('assessment-result-box').style.display = 'none';
+
+      if (!currentQuestions || currentQuestions.length === 0) {
+        container.innerHTML = `<div style="color: #94A3B8;">No assessment questions found for ${skill}.</div>`;
+        return;
+      }
+
+      currentQuestions.forEach((q, idx) => {
+        let optsHtml = '';
+        q.options.forEach((opt, optIdx) => {
+          optsHtml += `
+            <label style="display: block; padding: 0.55rem 0.8rem; background: rgba(15,23,42,0.6); border-radius: 6px; margin-bottom: 0.4rem; cursor: pointer;">
+              <input type="radio" name="q_${q.id}" value="${optIdx}" onchange="currentAnswers['${q.id}'] = ${optIdx}"> ${opt}
+            </label>
+          `;
+        });
+
+        container.innerHTML += `
+          <div class="glass-panel" style="margin-bottom: 1rem;">
+            <span class="agent-badge" style="color: #A5B4FC; margin-bottom: 0.4rem;">Question ${idx + 1} (${q.difficulty})</span>
+            <div style="font-weight: 700; color: #F1F5F9; font-size: 1.05rem; margin-bottom: 0.8rem;">${q.question}</div>
+            <div>${optsHtml}</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML += `
+        <button class="btn-primary" style="width: 100%; padding: 0.85rem;" onclick="submitAssessment()">
+          🚀 Submit Assessment for Multi-Agent Grading
+        </button>
+      `;
+    }
+
+    async function submitAssessment() {
+      const skill = document.getElementById('assess-skill-select').value;
+      const res = await fetch('/api/assessment/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: 1, skill_name: skill, answers: currentAnswers })
+      });
+      const evalData = await res.json();
+
+      const box = document.getElementById('assessment-result-box');
+      box.style.display = 'block';
+      const col = evalData.score >= 80 ? '#10B981' : (evalData.score >= 50 ? '#38BDF8' : '#F43F5E');
+
+      let reviewHtml = '';
+      evalData.detailed_breakdown.forEach(item => {
+        const icon = item.is_correct ? '✅' : '❌';
+        reviewHtml += `
+          <div style="background: rgba(15,23,42,0.6); border-radius: 6px; padding: 0.75rem 0.9rem; margin-bottom: 0.5rem; border-left: 3px solid ${item.is_correct ? '#10B981' : '#F43F5E'};">
+            <div style="font-weight: 600;">${icon} ${item.question}</div>
+            <div style="font-size: 0.82rem; color: #94A3B8; margin-top: 0.2rem;">
+              Correct Answer: <strong>${item.options[item.correct_choice]}</strong>
+            </div>
+            <div style="font-size: 0.82rem; color: #38BDF8; margin-top: 0.2rem;">💡 ${item.explanation}</div>
+          </div>
+        `;
+      });
+
+      box.innerHTML = `
+        <div class="hero-card" style="border-color: ${col};">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: ${col};">Score: ${evalData.score}%</div>
+            <span class="agent-badge badge-active">${evalData.performance_tier}</span>
+          </div>
+          <p style="color: #CBD5E1; margin: 0.5rem 0;">
+            Assessed Proficiency: <strong style="color: #38BDF8;">${evalData.proficiency_recommendation}</strong> | 
+            Correct: <strong>${evalData.correct_count} / ${evalData.total_questions}</strong>
+          </p>
+          <div style="background: rgba(8,12,22,0.6); padding: 0.8rem; border-radius: 6px; font-size: 0.88rem; margin: 0.8rem 0; border-left: 3px solid ${col};">
+            <strong>⚡ Adaptive Directive:</strong> ${evalData.adaptive_directive}<br>
+            <strong>💡 Recommendation:</strong> ${evalData.suggested_action}
+          </div>
+          <h4 style="margin: 0.8rem 0 0.4rem 0;">Question Explanations:</h4>
+          ${reviewHtml}
+        </div>
+      `;
+
+      await fetchUserData();
+      await fetchPipeline();
+    }
+
+    // Resources
+    async function fetchResources() {
+      try {
+        const res = await fetch('/api/resources');
+        globalResources = await res.json();
+        const selSkill = document.getElementById('res-filter-skill');
+        selSkill.innerHTML = '<option value="All">All Competencies</option>';
+        const skills = [...new Set(globalResources.map(r => r.skill_name || r.skill))];
+        skills.forEach(s => { selSkill.innerHTML += `<option value="${s}">${s}</option>`; });
+        filterResources();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function filterResources() {
+      const skillFilter = document.getElementById('res-filter-skill').value;
+      const typeFilter = document.getElementById('res-filter-type').value;
+      const grid = document.getElementById('resources-grid');
+      grid.innerHTML = '';
+
+      const filtered = globalResources.filter(r => {
+        const sName = r.skill_name || r.skill;
+        if (skillFilter !== 'All' && sName !== skillFilter) return false;
+        if (typeFilter !== 'All' && r.type !== typeFilter) return false;
+        return true;
+      });
+
+      filtered.forEach(r => {
+        grid.innerHTML += `
+          <div class="glass-panel" style="display: flex; flex-direction: column; justify-content: space-between; height: 180px;">
+            <div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="agent-badge badge-matched">${r.skill_name || r.skill}</span>
+                <span style="color: #F59E0B; font-size: 0.82rem; font-weight: 700;">★ ${r.rating}</span>
+              </div>
+              <div style="font-weight: 700; color: #F8FAFC; margin: 0.4rem 0 0.2rem 0; font-size: 1rem;">${r.title}</div>
+              <div style="font-size: 0.82rem; color: #94A3B8;">Provider: ${r.provider} | Format: ${r.type}</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.5rem;">
+              <span style="font-size: 0.78rem; color: #64748B;">⏱️ ${r.duration || 'Self-paced'}</span>
+              <a href="${r.url}" target="_blank" style="padding: 0.35rem 0.8rem; background: #3B82F6; color: white; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">
+                Open Resource ↗
+              </a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Mentor Chat
+    async function fetchMentorHistory() {
+      const res = await fetch('/api/mentor/history?user_id=1');
+      const msgs = await res.json();
+      const box = document.getElementById('mentor-chat-box');
+      box.innerHTML = '';
+
+      if (msgs.length === 0) {
+        box.innerHTML = `
+          <div class="chat-bubble assistant">
+            Hello Demo Student! I am your <strong>SkillNova AI Career Mentor</strong>. I synchronize with your live competencies and roadmap progress. Ask me any question or pick a suggested query!
+          </div>
+        `;
+        return;
+      }
+
+      msgs.forEach(m => {
+        box.innerHTML += `<div class="chat-bubble ${m.role}">${m.message.replace(/\n/g, '<br>')}</div>`;
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendMentorMessage() {
+      const input = document.getElementById('mentor-input');
+      const txt = input.value.trim();
+      if (!txt) return;
+      input.value = '';
+
+      const box = document.getElementById('mentor-chat-box');
+      box.innerHTML += `<div class="chat-bubble user">${txt}</div>`;
+      box.scrollTop = box.scrollHeight;
+
+      const res = await fetch('/api/mentor/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: 1, message: txt })
+      });
+      const data = await res.json();
+      const poweredBy = data.powered_by ? `<span style="display:inline-block;margin-top:6px;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;background:${data.powered_by.includes('Gemini') ? 'linear-gradient(135deg,#4285F4,#A855F7)' : '#334155'};color:#fff;">⚡ ${data.powered_by}</span>` : '';
+      box.innerHTML += `<div class="chat-bubble assistant">${data.response.replace(/\n/g, '<br>')}${poweredBy}</div>`;
+      box.scrollTop = box.scrollHeight;
+      fetchLogs();
+    }
+
+    function askMentor(q) {
+      document.getElementById('mentor-input').value = q;
+      sendMentorMessage();
+    }
+
+    // Activity Logs
+    async function fetchLogs() {
+      const res = await fetch('/api/logs?user_id=1');
+      const logs = await res.json();
+      const cont = document.getElementById('activity-logs-container');
+      const progCont = document.getElementById('prog-activity-list');
+      cont.innerHTML = '';
+      if (progCont) progCont.innerHTML = '';
+
+      logs.forEach(l => {
+        const itemHtml = `
+          <div class="log-item">
+            <span style="color: #60A5FA;">[${l.timestamp}]</span> &nbsp;
+            <strong style="color: #F8FAFC;">${l.agent_name}</strong> &nbsp;
+            <span class="agent-badge" style="font-size: 0.72rem; padding: 0.15rem 0.5rem;">${l.task}</span> &nbsp;
+            <span style="color: #34D399; float: right;">✓ ${l.status}</span>
+          </div>
+        `;
+        cont.innerHTML += itemHtml;
+        if (progCont) progCont.innerHTML += itemHtml;
+      });
+    }
+
+    // Progress Tracker Charts
+    function renderProgressCharts() {
+      if (!globalUser || !globalPipeline) return;
+      const skills = globalUser.skills || [];
+      const dist = { Expert: 0, Advanced: 0, Intermediate: 0, Beginner: 0 };
+      skills.forEach(s => { if (dist[s.proficiency_level] !== undefined) dist[s.proficiency_level]++; });
+
+      const ctxDonut = document.getElementById('chart-prog-donut').getContext('2d');
+      if (chartProgDonut) chartProgDonut.destroy();
+      chartProgDonut = new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(dist),
+          datasets: [{
+            data: Object.values(dist),
+            backgroundColor: ['#10B981', '#38BDF8', '#6366F1', '#F59E0B'],
+            borderWidth: 0
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#CBD5E1' } } } }
+      });
+
+      const rp = globalPipeline.roadmap_phases || [];
+      const completed = rp.filter(p => p.status === 'Completed').length;
+      const pending = rp.length - completed;
+
+      const ctxBar = document.getElementById('chart-prog-bar').getContext('2d');
+      if (chartProgBar) chartProgBar.destroy();
+      chartProgBar = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: ['Completed Phases', 'Pending / In Progress'],
+          datasets: [{
+            data: [completed, pending],
+            backgroundColor: ['#10B981', '#6366F1']
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: { y: { ticks: { color: '#94A3B8' } }, x: { ticks: { color: '#CBD5E1' } } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    // Skills CRUD
+    async function addSkill() {
+      const name = document.getElementById('new-skill-name').value.trim();
+      const level = document.getElementById('new-skill-level').value;
+      if (!name) return alert('Please enter a skill name.');
+
+      await fetch('/api/skills/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: 1, skill_name: name, proficiency_level: level })
+      });
+      document.getElementById('new-skill-name').value = '';
+      await fetchUserData();
+      await fetchPipeline();
+      alert(`Skill '${name}' saved!`);
+    }
+
+    async function deleteSkill(id) {
+      if (!confirm('Remove this skill?')) return;
+      await fetch('/api/skills/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: 1, skill_id: id })
+      });
+      await fetchUserData();
+      await fetchPipeline();
+    }
+
+    async function resetDemoData() {
+      await fetch('/api/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+      await initApp();
+      alert('Demo student scenario restored to defaults!');
+    }
+
+    async function saveGeminiKey() {
+      const key = document.getElementById('settings-api-key').value.trim();
+      if (!key) { alert('Please enter an API key.'); return; }
+      const res = await fetch('/api/settings/apikey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: key })
+      });
+      const data = await res.json();
+      const statusEl = document.getElementById('apikey-status');
+      if (data.status === 'success') {
+        statusEl.innerHTML = '✅ Gemini API key saved! AI Mentor will now use live Gemini responses.';
+        statusEl.style.color = '#34D399';
+      } else {
+        statusEl.innerHTML = '❌ ' + data.message;
+        statusEl.style.color = '#FB7185';
+      }
+    }
+
+    // Run initialization
+    initApp();
+  </script>
+</body>
+</html>
